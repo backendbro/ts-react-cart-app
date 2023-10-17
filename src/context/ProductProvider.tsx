@@ -6,7 +6,6 @@ export type ProductType = {
     price:number  
 }
 
-
 const initState: ProductType[] = [
     {
         "sku":"item0001",
@@ -42,6 +41,7 @@ export const ProductsProvider = ({children}:ChildrenType):ReactElement => {
             {children}
         </ProductsContext.Provider>
     )
+
 }
 
 export default ProductsContext

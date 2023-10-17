@@ -1,3 +1,5 @@
+import { ReactElement, createContext, useMemo, useReducer, useState } from "react"
+
 export type CartItemType = {
     sku:string,
     name:string,
@@ -92,4 +94,62 @@ const reducer = (state: CartStateType, action:ReducerAction): CartStateType => {
 }
 
 
+const useCartContext = (initCartState:CartStateType) => {
+    const [state, dispatch] = useReducer(reducer, initCartState)
 
+    const REDUCER_ACTION = useMemo(() => {
+        return REDUCER_ACTION_TYPE
+    }, [])
+
+    const totalItems:number = state.cart.reduce((prev, cartItem) => {
+        return prev + cartItem.qty
+    }, 0) 
+    
+    const totalPrice:string = new Intl.NumberFormat("en-US", {
+        style:"currency", currency:"USD"
+    }).format(
+        state.cart.reduce((prev, cartItem) => {
+            return prev + (cartItem.qty * cartItem.price)
+        }, 0)
+    )   
+
+    const cart = state.cart.sort((a,b) => {
+        const itemA = Number(a.sku.slice(-4))
+        const itemB = Number(b.sku.slice(-4))
+
+        return itemA - itemB
+    })
+
+    return {
+        dispatch,
+        REDUCER_ACTION,
+        totalItems,
+        totalPrice,
+        cart 
+    }
+}
+
+export type UseCartContextType = ReturnType< typeof useCartContext >
+export const initCartContextState:UseCartContextType = {
+    dispatch:() => {},
+    REDUCER_ACTION:REDUCER_ACTION_TYPE,
+    totalItems: 0,
+    totalPrice:"",
+    cart:[]
+}
+
+export const CartContext = createContext<UseCartContextType> (initCartContextState)
+
+type ChildrenType = { 
+    children?:ReactElement | ReactElement []
+}
+
+export const CartContextProvider = ({children}: ChildrenType) : ReactElement => {
+    return (
+        <CartContext.Provider value={useCartContext(initCartState)}>
+            {children}
+        </CartContext.Provider>
+    )
+}
+
+export default CartContext; 
