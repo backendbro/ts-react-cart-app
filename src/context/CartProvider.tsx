@@ -14,7 +14,8 @@ const REDUCER_ACTION_TYPE = {
     ADD:"ADD",
     REMOVE:"REMOVE",
     QUANTITY:"QUANTITY",
-    SUBMIT:"SUBMIT"
+    SUBMIT:"SUBMIT",
+    TEST:"TEST"
 }
 
 export type ReducerActionType = typeof REDUCER_ACTION_TYPE 
@@ -31,29 +32,57 @@ const reducer = (state: CartStateType, action:ReducerAction): CartStateType => {
                 throw new Error ("action.payload missing in ADD action")
             }   
             
-            
-            return {...state, }
+            const {sku, name, price} = action.payload 
+
+            const filteredCart : CartItemType[] = state.cart.filter(item => {
+                item.sku !== sku 
+            }) // this will grab us all other items except the newly recieved payload
+            const itemExists: CartItemType | undefined = state.cart.find(item => {
+                item.sku === sku
+            }) 
+
+            const qty:number = itemExists ? itemExists.qty + 1 : 1 
+            return {...state, cart:[...filteredCart, {sku, name, price, qty}]}
         }
     
         case REDUCER_ACTION_TYPE.REMOVE:{
             if (!action.payload){
                 throw new Error ("action.payload missing in REMOVE action")
             }
-            return {...state}
+            const {sku} = action.payload 
+            const filteredCart:CartItemType[] = state.cart.filter(item => {
+                item.sku !== sku 
+            })
+            return {...state, cart:[...filteredCart]}
         }
 
         case REDUCER_ACTION_TYPE.QUANTITY:{
             if (!action.payload){
                 throw new Error ("action.payload missing in QUANTITY action")
             }
-            return {...state}
+
+            const {sku, qty} = action.payload 
+            
+            const itemExists: CartItemType | undefined = state.cart.find(item => {
+                item.sku === sku 
+            })
+
+            if(!itemExists) {throw new Error("Item must exist in order to update quantity")}
+
+            const updatedItem: CartItemType = { ...itemExists, qty }
+
+            const filteredCart:CartItemType[] = state.cart.filter(item => {
+                item.sku !== sku 
+            })
+
+            return {...state, cart:[...filteredCart, updatedItem]}
         }
 
         // submit this to a server. 
         case REDUCER_ACTION_TYPE.SUBMIT:{
             if (!action.payload){
                 throw new Error ("action.payload missing in SUBMIT action")
-            }
+            }   
             return {...state, cart:[]}
         }
         
