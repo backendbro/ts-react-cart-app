@@ -1,3 +1,5 @@
+import useCart from "../hooks/useCart"
+import { useState } from "react"
 
 
 const Cart = () => {
