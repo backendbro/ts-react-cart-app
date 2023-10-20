@@ -1,26 +1,26 @@
-import useProducts from "../hooks/useProducts"
 import useCart from "../hooks/useCart"
-import { UseProductsContextType } from "../context/ProductProvider"
+import useProducts from "../hooks/useProducts"
+import { UseProductsContextType } from "../context/ProductsProvider"
 import { ReactElement } from "react"
 import Product from "./Product"
 
-
 const ProductList = () => {
-    const {dispatch, REDUCER_ACTION, cart} = useCart()
-    const {products} = useProducts()
+    const { dispatch, REDUCER_ACTIONS, cart } = useCart()
+    const { products } = useProducts()
 
-    let pageContent:ReactElement | ReactElement[] = <p>Loading...</p>
-    if(products?.length) {
-        pageContent = products.map((product) => {
+    let pageContent: ReactElement | ReactElement[] = <p>Loading...</p>
+
+    if (products?.length) {
+        pageContent = products.map(product => {
             const inCart: boolean = cart.some(item => item.sku === product.sku)
-        
+
             return (
-                <Product 
-                key={product.sku}
-                product={product}
-                dispatch={dispatch}
-                REDUCER_ACTION = {REDUCER_ACTION}
-                inCart = {inCart}
+                <Product
+                    key={product.sku}
+                    product={product}
+                    dispatch={dispatch}
+                    REDUCER_ACTIONS={REDUCER_ACTIONS}
+                    inCart={inCart}
                 />
             )
         })
@@ -32,7 +32,6 @@ const ProductList = () => {
         </main>
     )
 
-    return content 
- }
-
-export default ProductList 
+    return content
+}
+export default ProductList

@@ -1,10 +1,9 @@
-import { useContext } from "react";
-import ProductsContext from "../context/ProductProvider";
-import { UseProductsContextType } from "../context/ProductProvider";
+import { useContext } from "react"
+import ProductsContext from "../context/ProductsProvider"
+import { UseProductsContextType } from "../context/ProductsProvider"
 
-
-const useProducts = ():UseProductsContextType => {
+const useProducts = (): UseProductsContextType => {
     return useContext(ProductsContext)
 }
 
-export default useProducts 
+export default useProducts
